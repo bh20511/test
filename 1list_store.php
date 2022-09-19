@@ -96,17 +96,17 @@ $output = [
                     <?php foreach ($rows as $r) : ?>
                         <tr>
                             <td>
-                                <a href="javascript: delete_it(<?= $r['store_sid'] ?>)" >
+                                <a href="javascript: delete_it(<?= $r['store_sid'] ?>)">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </a>
                             </td>
                             <td><?= $r['store_sid'] ?></td>
                             <td><?= $r['store_name'] ?></td>
                             <td><?= $r['store_address'] ?></td>
-                            <td><img src="./store/<?= $r['store_img'] ?>"alt="" style="width:100px;"></td>
-                            
+                            <td><img src="./store/<?= $r['store_img'] ?>" alt="" style="width:100px;"></td>
+
                             <td>
-                                <a href="edit-form.php?store_sid=<?= $r['store_sid'] ?>">
+                                <a href="1edit_store.php?store_sid=<?= $r['store_sid'] ?>">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                             </td>
@@ -125,11 +125,10 @@ $output = [
 <script>
     const table = document.querySelector('table');
 
-    function delete_it(store_sid){
-        if(confirm(`確定要刪除編號為 ${store_sid} 的資料嗎?`)){
+    function delete_it(store_sid) {
+        if (confirm(`確定要刪除編號為 ${store_sid} 的資料嗎?`)) {
             location.href = `1delete_store.php?store_sid=${store_sid}`;
         }
     }
-    
 </script>
 <?php include __DIR__ . '/parts/html-foot.php'; ?>

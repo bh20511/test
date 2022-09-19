@@ -1,13 +1,13 @@
-<?php require __DIR__ . '/parts/connect_db.php';
+<?php require __DIR__ . '/parts/connect_db2.php';
 $pageName = 'edit';
 
-$sid = isset($_GET['sid']) ? intval($_GET['sid']) : 0;
-if(empty($sid)){
+$store_sid = isset($_GET['store_sid']) ? intval($_GET['store_sid']) : 0;
+if(empty($store_sid)){
     header('Location: list.php');
     exit;
 }
 
-$sql = "SELECT * FROM address_book WHERE sid=$sid";
+$sql = "SELECT * FROM store WHERE store_sid=$store_sid";
 $r = $pdo->query($sql)->fetch();
 if(empty($r)){
     header('Location: list.php');
@@ -26,31 +26,23 @@ if(empty($r)){
 
                 <div class="card-body">
                     <h5 class="card-title">修改資料</h5>
+                    <img src="./store/<?= $r['store_img'] ?>" alt="" style="width:100px;" id="myimg">
+
+                    
                     <form name="form1" onsubmit="checkForm(); return false;" novalidate>
-                        <input type="hidden" name="sid" value="<?= $r['sid'] ?>">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">name</label>
-                            <input type="text" class="form-control" id="name" name="name" required value="<?= htmlentities($r['name']) ?>">
-                        </div>
+                        <input type="hidden" name="store_sid" value="<?= $r['store_sid'] ?>">
+                        <input type="file" name="single" accept="image/png,image/jpeg" id="imgg">
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">email</label>
-                            <input type="email" class="form-control" id="email" name="email"  value="<?= $r['email'] ?>">
+                            <label for="name" class="form-label">店名</label>
+                            <input type="text" class="form-control" id="store_name" name="store_name" required value="<?= htmlentities($r['store_name']) ?>">
                         </div>
+                        
                         <div class="mb-3">
-                            <label for="mobile" class="form-label">mobile</label>
-                            <input type="text" class="form-control" id="mobile" name="mobile"  value="<?= $r['mobile'] ?>"
-                            pattern="09\d{2}-?\d{3}-?\d{3}" >
-                        </div>
-                        <div class="mb-3">
-                            <label for="birthday" class="form-label">birthday</label>
-                            <input type="date" class="form-control" id="birthday" name="birthday"  value="<?= $r['birthday'] ?>" >
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">address</label>
+                            <label for="store_address" class="form-label">店址</label>
 
-                            <textarea class="form-control" name="address" id="address" 
-                            cols="50" rows="3"><?= $r['address'] ?></textarea>
+                            <textarea class="form-control" name="store_address" id="store_address" 
+                            cols="50" rows="3"><?= $r['store_address'] ?></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -62,17 +54,17 @@ if(empty($r)){
 </div>
 <?php include __DIR__ . '/parts/scripts.php'; ?>
 <script>
+    let imgg = document.querySelector("#imgg");
+    let myimg = document.querySelector("#myimg");
+    imgg.addEventListener("change",(e)=>{
+        const file = e.target.files[0];
+        myimg.src = URL.createObjectURL(file)
+    })
+
     function checkForm(){
-        // document.form1.email.value
-
+    
         const fd = new FormData(document.form1);
-
-        for(let k of fd.keys()){
-            console.log(`${k}: ${fd.get(k)}`);
-        }
-        // TODO: 檢查欄位資料
-
-        fetch('edit-api.php', {
+        fetch('1edit_store_api.php', {
             method: 'POST',
             body: fd
         }).then(r=>r.json()).then(obj=>{
