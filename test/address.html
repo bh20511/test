@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <select id="select1" data-val="桃園市"></select>
+    <select id="selectArea" data-val="八德區"></select>
+    <select id="selectRoad" data-val="大同路"></select>
+
+    <script>
+        let ADDRESS;
+        fetch('data/address.json')
+        .then(r=>r.json())
+        .then(result=>{
+            ADDRESS=result;
+            myFunc();
+        });
+
+        function myFunc() {
+            //const values = ['桃園市', '八德區', '大同路'];
+            console.log(ADDRESS);
+            let sel = document.querySelector("#select1");
+            let selArea = document.querySelector("#selectArea");
+            let selRoad = document.querySelector("#selectRoad");
+
+            ADDRESS.forEach(element => {
+                sel.options.add(new Option(element.CityName));
+            });
+
+            //這邊是開始 顯示出第一個預設按鈕
+            let city = sel.options[sel.selectedIndex].value; //取出現在選取的值
+            let areas = ADDRESS.filter(element => element.CityName === city); //藉由city過濾出只要的縣市陣列
+
+            areas[0].AreaList.forEach(element => {  //過濾後的縣市陣列 取出第一筆 然後在AreaList陣列 個別取出區(AreaName跟Zipcode)
+                let { AreaName, Zipcode } = element
+                selArea.options.add(new Option(AreaName, Zipcode));
+            });
+
+            //這邊是開始 顯示出第二個預設按鈕
+            let district = selArea.options[selArea.selectedIndex].value; //抓現在selArea選取到的區的值
+            let newareas = areas[0].AreaList.filter(element => element.AreaName === district);
+            newareas[0].RoadList.forEach(element => {
+                let { RoadName } = element;
+                selRoad.options.add(new Option(RoadName));
+            })
+
+
+
+
+            sel.addEventListener("change", () => {
+                selArea.options.length = 0; //變化時先把第二格的選項清掉
+                let city = sel.options[sel.selectedIndex].value;
+                let areas = ADDRESS.filter(element => element.CityName === city);
+
+                areas[0].AreaList.forEach(element => {
+                    let { AreaName, Zipcode } = element
+                    selArea.options.add(new Option(AreaName, Zipcode));
+                });
+
+                //更改第三個的值 
+                selRoad.options.length = 0;
+                let district = selArea.options[selArea.selectedIndex].value; //抓區的值
+                let newareas = areas[0].AreaList.filter(value => value.AreaName === district);//透過區來過濾出新的陣列
+
+                newareas[0].RoadList.forEach(element => {         //透過新的陣列取出路名添加到第三格
+                    let { RoadName } = element;
+                    selRoad.options.add(new Option(RoadName));
+                })
+
+            });
+
+            selArea.addEventListener("change", () => {
+                selRoad.options.length = 0; //變化時先把第二格的選項清掉
+                let city = sel.options[sel.selectedIndex].value;
+                let areas = ADDRESS.filter(element => element.CityName === city); //這兩行 先過濾出市之後陣列
+                let district = selArea.options[selArea.selectedIndex].value; //抓區的值
+                let newareas = areas[0].AreaList.filter(element => element.AreaName === district);
+                // console.log(newareas);
+                newareas[0].RoadList.forEach(element => {
+                    let { RoadName } = element;
+                    selRoad.options.add(new Option(RoadName));
+                })
+            });
+
+            const cityVal = sel.getAttribute('data-val');
+            sel.value = cityVal;
+            sel.dispatchEvent(new Event('change'));
+
+            const areaVal = selArea.getAttribute('data-val');
+            selArea.value = areaVal;
+            selArea.dispatchEvent(new Event('change'));
+
+            const roadVal = selRoad.getAttribute('data-val');
+            selRoad.value = roadVal;
+        }
+    </script>
+</body>
+
+</html>
