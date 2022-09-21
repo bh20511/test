@@ -4,8 +4,11 @@ $pageName = 'insert';
 
 
 <?php
-$sql = "SELECT `sid`,`product_category` FROM `product_category`";
-$rows = $pdo->query($sql)->fetchAll();
+$sql1 = "SELECT `sid`,`product_category` FROM `product_category`";
+$rows = $pdo->query($sql1)->fetchAll();
+
+$sql2 = "SELECT * FROM `brand`";
+$rows2 = $pdo->query($sql2)->fetchAll();
 ?>
 
 <?php require __DIR__ . '/parts/html-head.php'; ?>
@@ -27,11 +30,21 @@ $rows = $pdo->query($sql)->fetchAll();
                             <label for="name" class="form-label">租借品名</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
-
+                        
+                        <label for="sid">商品種類</label>
                         <select name="sid" id="sid">
-                            <?php foreach ($rows as $r) : ?>
+                           <?php foreach ($rows as $r) : ?>
                                 <option value="<?= $r['sid'] ?>">
                                     <?= $r['product_category'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <label for="sid">商品品牌</label>
+                        <select name="brand_sid" id="brand_sid">
+                           <?php foreach ($rows2 as $w) : ?>
+                                <option value="<?= $w['brand_sid'] ?>">
+                                    <?= $w['brand_name'] ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -39,6 +52,11 @@ $rows = $pdo->query($sql)->fetchAll();
                         <div class="mb-3">
                             <label for="price" class="form-label">每日租價</label>
                             <input type="text" class="form-control" id="price" name="price" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="price" class="form-label">數量</label>
+                            <input type="text" class="form-control" id="rental_qty" name="rental_qty" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -68,8 +86,12 @@ $rows = $pdo->query($sql)->fetchAll();
             method: 'POST',
             body: fd
         }).then(r => r.json()).then(obj => {
-            alert("新增完成");
+            if(obj.success){
+                alert("新增完成");
             location.href = "2add_rental.php";
+            }else{
+                alert("新增失敗,請檢查必要資訊");
+            }
         })
     }
 </script>

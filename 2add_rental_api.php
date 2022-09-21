@@ -14,10 +14,6 @@ $output = [
     'error' => '',
     'data' => [],
     'files' => $_FILES, // 除錯用
-    'post1' => $_POST['name'],
-    'post2' => $_POST['sid'],
-    'post3' => $_POST['price'],
-
 ];
 
 if(empty($_FILES['single'])){
@@ -65,21 +61,19 @@ if(empty($_POST['name']) OR empty($_POST['price'])){
 }
 
 $sql = "INSERT INTO `rental`(
-    `rental_product_name`,`product_category_sid`,`rental_price`,`rental_img`
-)VALUES(?,?,?,?)";
+    `rental_product_name`,`product_category_sid`,`brand_sid`,`rental_price`,`rental_img`,`rental_qty`
+)VALUES(?,?,?,?,?,?)";
 
 $stmt = $pdo->prepare($sql);
-
-$sql = "INSERT INTO `store`(
-    `store_name`,`store_address`,`store_img`
-)VALUES(?,?,?)";
 
 try{
 $stmt->execute([
     $_POST['name'],
     $_POST['sid'],
+    $_POST['brand_sid'],
     $_POST['price'],
     $filename,
+    $_POST['rental_qty']
 ]);
 } catch(PDOException $ex){
     $output['error'] =$ex->getMessage();

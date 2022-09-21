@@ -15,8 +15,8 @@ $output = [
     'files' => $_FILES, // 除錯用
 ];
 
-if(empty($_FILES['single'])){
-    $output['error'] = '沒有上傳檔案';
+if(empty($_FILES['single']['name'])){
+    $output['error'] = '沒有 上傳檔案';
     echo json_encode($output, JSON_UNESCAPED_UNICODE);
     exit;
 }

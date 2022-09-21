@@ -1,6 +1,6 @@
 <?php 
 require __DIR__ . '/parts/connect_db2.php';
-$folder = __DIR__. '/store/';
+$folder = __DIR__. '/rental/';
 
 header('Content-Type: application/json');
 
@@ -9,7 +9,7 @@ header('Content-Type: application/json');
 
 
 
-if(empty($_POST['store_name'])){
+if(empty($_POST['rental_product_sid'])){
     $output['error'] = '參數不足';
     $output['code'] = 400;
     echo json_encode($output, JSON_UNESCAPED_UNICODE); 
@@ -18,20 +18,35 @@ if(empty($_POST['store_name'])){
 
 // $sql = "SELECT * FROM store WHERE store_sid=$store_sid";
 // TODO: 檢查欄位資料
+$output = [
+    'success' => false,
+    'error' => '',
+    'code' => 0,
+    'postData' => $_POST['rental_product_sid'],
+    'files' => $_FILES,
+     // 除錯用的
+];
+
 
 
 if(empty($_FILES['single']['name'])){
-    $sql = "UPDATE `store` SET 
-    `store_name`=?,
-    `store_address`=?
-    WHERE store_sid=?";  
+    $sql = "UPDATE `rental` SET 
+    `rental_product_name`=?,
+    `product_category_sid`=?,
+    `brand_sid`=?,
+    `rental_price`=?,
+    `rental_qty`=?
+    WHERE rental_product_sid =?";  
     $stmt = $pdo->prepare($sql);
 
     try {
         $stmt->execute([
-            $_POST['store_name'],
-            $_POST['store_address'],
-            $_POST['store_sid']
+            $_POST['rental_product_name'],
+            $_POST['product_category_sid'],
+            $_POST['brand_sid'],
+            $_POST['rental_price'],
+            $_POST['rental_qty'],
+            $_POST['rental_product_sid']
         ]);
     } catch(PDOException $ex) {
         $output['error'] = $ex->getMessage();
@@ -66,29 +81,27 @@ if(empty($_FILES['single']['name'])){
         exit;
     }
     
-    $output = [
-        'success' => false,
-        'error' => '',
-        'code' => 0,
-        'postData' => $_POST['store_sid'],
-        'files' => $_FILES,
-         // 除錯用的
-    ];
     
-    $sql = "UPDATE `store` SET 
-    `store_name`=?,
-    `store_address`=?,
-    `store_img`=?
-    WHERE store_sid=?";
-
-$stmt = $pdo->prepare($sql);
+    
+    $sql = "UPDATE `rental` SET 
+    `rental_product_name`=?,
+    `product_category_sid`=?,
+    `brand_sid`=?,
+    `rental_price`=?,
+    `rental_img`=?,
+    `rental_qty`=?
+    WHERE rental_product_sid =?";  
+    $stmt = $pdo->prepare($sql);
 
 try {
     $stmt->execute([
-        $_POST['store_name'],
-        $_POST['store_address'],
+        $_POST['rental_product_name'],
+        $_POST['product_category_sid'],
+        $_POST['brand_sid'],
+        $_POST['rental_price'],
         $filename,
-        $_POST['store_sid']
+        $_POST['rental_qty'],
+        $_POST['rental_product_sid']
     ]);
 } catch(PDOException $ex) {
     $output['error'] = $ex->getMessage();

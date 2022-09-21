@@ -3,14 +3,14 @@ $pageName = 'edit';
 
 $store_sid = isset($_GET['store_sid']) ? intval($_GET['store_sid']) : 0;
 if(empty($store_sid)){
-    header('Location: list.php');
+    header('Location: 1list_store.php');
     exit;
 }
 
 $sql = "SELECT * FROM store WHERE store_sid=$store_sid";
 $r = $pdo->query($sql)->fetch();
 if(empty($r)){
-    header('Location: list.php');
+    header('Location: 1list_store.php');
     exit;
 }
 
@@ -22,7 +22,7 @@ if(empty($r)){
 <div class="container">
     <div class="row">
         <div class="col-lg-6">
-            <div class="card">
+            <div class="card"> 
 
                 <div class="card-body">
                     <h5 class="card-title">修改資料</h5>
@@ -32,7 +32,7 @@ if(empty($r)){
                     <form name="form1" onsubmit="checkForm(); return false;" novalidate>
                         <input type="hidden" name="store_sid" value="<?= $r['store_sid'] ?>">
                         <input type="file" name="single" accept="image/png,image/jpeg" id="imgg">
-
+                         
                         <div class="mb-3">
                             <label for="name" class="form-label">店名</label>
                             <input type="text" class="form-control" id="store_name" name="store_name" required value="<?= htmlentities($r['store_name']) ?>">
@@ -73,7 +73,7 @@ if(empty($r)){
                 alert(obj.error);
             } else {
                 alert('修改成功')
-                // location.href = 'list.php';
+                location.href = '1list_store.php';
             }
         })
 

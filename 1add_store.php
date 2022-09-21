@@ -12,6 +12,7 @@ $pageName = 'insert';
                     <h5 class="card-title">新增店點資料</h5>
 
                     <img id="myimg" src="" alt="" width="300">
+
                     <form name="form1" onsubmit="checkForm(); return false;">
                         <input type="file" name="single" accept="image/png,image/jpeg" id="imgg">
                         <div class="mb-3">
@@ -47,9 +48,7 @@ $pageName = 'insert';
 
     function checkForm() {
         const fd = new FormData(document.form1);
-        for (let k of fd.keys()) {
-            console.log(`${k}:${fd.get(k)}`);
-        }
+       
         fetch(`1add_store_api.php`, {
             method: 'POST',
             body: fd
